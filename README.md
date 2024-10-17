@@ -25,6 +25,7 @@ io println "Hello, world!"
 - floats: `1,000.00`
 - list: `[0 1 2 3 4 5 6 7 8 9 "Also strings!"]` (note that this must be on one line)
 - bool: `true` and `false` (1 and 0)
+- empty states: `nil` which is used for undefined values and `none` which is emptiness.
 
 
 ## Variables
