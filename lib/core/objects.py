@@ -48,10 +48,10 @@ def make_function(name, body, params):
             "defs": {},
             "memoize": {},
             "id": id_tracker - 1,
-            "capture":constants.nil
+            "capture": constants.nil,
         },
         name,
-        "builtin-function-object"
+        "builtin-function-object",
     )
 
 

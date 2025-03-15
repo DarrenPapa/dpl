@@ -6,38 +6,39 @@ if not dpl.info.VERSION.isLater((1, 4, None)):
 
 ext = dpl.extension(meta_name="tests", alias=__alias__)
 
-ext.items["ASSERT_ERROR"] =\
-dpl.register_error("ASSERT_ERROR")
+ext.items["ASSERT_ERROR"] = dpl.register_error("ASSERT_ERROR")
+
 
 def pprint(d, l=0, seen=None):
     if seen is None:
         seen = set()
     if id(d) in seen:
-        print("  "*l+"...")
+        print("  " * l + "...")
         return
     seen.add(id(d))
     if isinstance(d, list):
         for i in d:
             if isinstance(i, list):
-                print("  "*l+f"[")
-                pprint(i, l+1, seen)
-                print("  "*l+"]")
+                print("  " * l + f"[")
+                pprint(i, l + 1, seen)
+                print("  " * l + "]")
             else:
-                print("  "*l+repr(i))
+                print("  " * l + repr(i))
         return
     for name, value in d.items():
         if name.startswith("_"):
             ...
         elif isinstance(value, dict):
-            print("  "*l+"{name!r} => {{")
-            pprint(value, l+1, seen)
-            print("  "*l+"}")
+            print("  " * l + "{name!r} => {{")
+            pprint(value, l + 1, seen)
+            print("  " * l + "}")
         elif isinstance(value, list):
-            print("  "*l+f"{name!r} => [")
-            pprint(value, l+1, seen)
-            print("  "*l+"]")
+            print("  " * l + f"{name!r} => [")
+            pprint(value, l + 1, seen)
+            print("  " * l + "]")
         else:
             print(f"{name!r} = {value!r}")
+
 
 @ext.add_func("assert")
 def _(frame, _, condition, message):

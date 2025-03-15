@@ -1,5 +1,11 @@
 # 1.4.6
 
+## Notice for using dynamic libraries
+
+Return values other than int, float, long and char* (any other char variation)
+is not directly supported and may require using the "#include <Python.h>"
+header. This is also true for parameters (or arguments).
+
 ## Using dynamic libraries
 
 You can now use C in DPL!

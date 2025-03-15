@@ -22,6 +22,7 @@ from . import restricted
 from . import objects
 from . import constants
 from . import py_argument_handler
+
 arguments_handler = py_argument_handler.arguments_handler
 
 
@@ -50,9 +51,7 @@ class extension:
     def __init__(self, name=None, meta_name=None, alias=None):
         self.__func = {}  # functions
         self.__meth = {}  # methods
-        self.name = (
-            name  # This is a scope name, dpl defined name.func_name
-        )
+        self.name = name  # This is a scope name, dpl defined name.func_name
         self.meta_name = meta_name  # while this is the mangled name, python defined "{meta_name}:{func_name}"
         if not alias is None:
             if self.name:
@@ -64,6 +63,7 @@ class extension:
 
     def add_func(self, name=None):
         "Add a function."
+
         def wrap(func):
             nonlocal name
             if func.__doc__ is None:
@@ -78,10 +78,12 @@ class extension:
                 func
             )
             return func
+
         return wrap
 
     def add_method(self, name=None, from_func=False):
         "Add a method."
+
         def wrap(func):
             nonlocal name
             if name is None:
@@ -96,11 +98,11 @@ class extension:
                 func if not from_func else lambda *args: func(args[0], None, *args[1:])
             )
             return func
+
         return wrap
 
     def get(self, name, default=None):
         return self.__data.get(name, default)
-
 
     @property
     def functions(self):
@@ -180,7 +182,7 @@ def luaj_import(
             print("File not found:", file)
             return 1
     if os.path.isdir(file):
-        if os.path.isfile(files:=os.path.join(file, "include-lua.txt")):
+        if os.path.isfile(files := os.path.join(file, "include-lua.txt")):
             with open(files) as f:
                 for line in f:
                     line = line.strip()
@@ -191,10 +193,12 @@ def luaj_import(
                     else:
                         alias = None
                     if line.startswith("#:"):
-                        print(f"{files} [N/A]:",line[2:]) # for messages like deprecation warnings
+                        print(
+                            f"{files} [N/A]:", line[2:]
+                        )  # for messages like deprecation warnings
                     elif line.startswith("#?"):
-                        print(line[2:]) # for messages like deprecation warnings
-                    elif line.startswith('#') or not line:
+                        print(line[2:])  # for messages like deprecation warnings
+                    elif line.startswith("#") or not line:
                         ...
                     else:
                         if luaj_import(frame, line, search_path=file, loc=loc):
@@ -202,7 +206,9 @@ def luaj_import(
                             return 1
             return
         else:
-            print("luaj: 'include.txt' not found.\nTried to include a directory ({file!r}) without an include file!")
+            print(
+                "luaj: 'include.txt' not found.\nTried to include a directory ({file!r}) without an include file!"
+            )
             return 1
     if varproc.is_debug_enabled("show_imports"):
         error.info(f"Imported {file!r}")
@@ -245,7 +251,9 @@ def luaj_import(
         varproc.dependencies["lua"][search_path] = {file}
 
 
-def py_import(frame, file, search_path=None, loc=varproc.meta["internal"]["main_path"], alias=None):
+def py_import(
+    frame, file, search_path=None, loc=varproc.meta["internal"]["main_path"], alias=None
+):
     if not os.path.isabs(file):
         if search_path is not None:
             file = os.path.join(
@@ -261,7 +269,7 @@ def py_import(frame, file, search_path=None, loc=varproc.meta["internal"]["main_
         if alias:
             frame[-1][alias] = {}
             frame = [frame[-1][alias]]
-        if os.path.isfile(files:=os.path.join(file, "include-py.txt")):
+        if os.path.isfile(files := os.path.join(file, "include-py.txt")):
             with open(files) as f:
                 for line in f.readlines():
                     line = line.strip()
@@ -272,10 +280,12 @@ def py_import(frame, file, search_path=None, loc=varproc.meta["internal"]["main_
                     else:
                         alias = None
                     if line.startswith("#:"):
-                        print(f"{files} [N/A]:",line[2:]) # for messages like deprecation warnings
+                        print(
+                            f"{files} [N/A]:", line[2:]
+                        )  # for messages like deprecation warnings
                     elif line.startswith("#?"):
-                        print(line[2:]) # for messages like deprecation warnings
-                    elif line.startswith('#') or not line:
+                        print(line[2:])  # for messages like deprecation warnings
+                    elif line.startswith("#") or not line:
                         ...
                     else:
                         if py_import(frame, line, search_path=file, loc=loc):
@@ -283,14 +293,23 @@ def py_import(frame, file, search_path=None, loc=varproc.meta["internal"]["main_
                             return 1
             return
         else:
-            print("python: 'include.txt' not found.\nTried to include a directory ({file!r}) without an include file!")
+            print(
+                "python: 'include.txt' not found.\nTried to include a directory ({file!r}) without an include file!"
+            )
             return 1
     if varproc.is_debug_enabled("show_imports"):
-        error.info(f"Imported {file!r}" if not alias else f"Imported {file!r} as {alias}")
+        error.info(
+            f"Imported {file!r}" if not alias else f"Imported {file!r} as {alias}"
+        )
     with open(file, "r") as f:
         obj = compile(f.read(), file, "exec")
         try:
-            d = {"__name__": "__dpl__", "modules": modules, "dpl": dpl, "__alias__":alias}
+            d = {
+                "__name__": "__dpl__",
+                "modules": modules,
+                "dpl": dpl,
+                "__alias__": alias,
+            }
             exec(obj, d)
         except (SystemExit, KeyboardInterrupt):
             raise

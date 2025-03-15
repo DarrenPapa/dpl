@@ -35,9 +35,11 @@ sys.set_int_max_str_digits(10**6)
 
 try:
     import dill as pickle
+
     has_dill = True
 except ModuleNotFoundError:
     import pickle
+
     has_dill = False
 
 
@@ -250,8 +252,10 @@ def handle_args():
                         if line == "--":
                             get = False
                         else:
-                            if not oline.startswith('  '):
-                                print(f"{file.name} [line {line_pos}]: Expected a 2-space indent!")
+                            if not oline.startswith("  "):
+                                print(
+                                    f"{file.name} [line {line_pos}]: Expected a 2-space indent!"
+                                )
                                 exit(1)
                             res.append(oline.rstrip()[2:])
                         continue
@@ -264,6 +268,7 @@ def handle_args():
             from prompt_toolkit.history import InMemoryHistory
             from prompt_toolkit import prompt
             from prompt_toolkit.completion import WordCompleter
+
             if os.path.isfile(os.path.join(info.BINDIR, "start_prompt.txt")):
                 start_text = open(os.path.join(info.BINDIR, "start_prompt.txt")).read()
             else:
@@ -274,8 +279,8 @@ def handle_args():
             if not "-disable-auto-complete" in flags:
                 for f in frame:
                     acc.extend(utils.flatten_dict(f).keys())
-                    acc.extend(map(lambda x:":"+x, utils.flatten_dict(f).keys()))
-                    acc.extend(map(lambda x:"%"+x, utils.flatten_dict(f).keys()))
+                    acc.extend(map(lambda x: ":" + x, utils.flatten_dict(f).keys()))
+                    acc.extend(map(lambda x: "%" + x, utils.flatten_dict(f).keys()))
             if "import-all" in varproc.flags:
                 if "verbose" in varproc.flags:
                     print("Importing all standard modules...")
@@ -302,7 +307,13 @@ def handle_args():
                     print("something went wrong while running start up script!")
             while True:
                 try:
-                    act = prompt(PROMPT_CTL["ps1"], completer=WordCompleter(acc+suggest.SUGGEST, pattern=suggest.pattern), history=cmd_hist).strip()
+                    act = prompt(
+                        PROMPT_CTL["ps1"],
+                        completer=WordCompleter(
+                            acc + suggest.SUGGEST, pattern=suggest.pattern
+                        ),
+                        history=cmd_hist,
+                    ).strip()
                 except (KeyboardInterrupt, EOFError):
                     exit()
                 if (
@@ -315,7 +326,13 @@ def handle_args():
                 ):
                     while True:
                         try:
-                            aa = prompt(PROMPT_CTL["ps2"], completer=WordCompleter(acc+suggest.SUGGEST, pattern=suggest.pattern), history=cmd_hist).strip()
+                            aa = prompt(
+                                PROMPT_CTL["ps2"],
+                                completer=WordCompleter(
+                                    acc + suggest.SUGGEST, pattern=suggest.pattern
+                                ),
+                                history=cmd_hist,
+                            ).strip()
                         except (KeyboardInterrupt, EOFError):
                             exit()
                         if not aa:
@@ -352,14 +369,20 @@ def handle_args():
                             print("something went wrong while running start up script!")
                     continue
                 try:
-                    if err := parser.run(parser.process(act, "./repr.dpl-instance"), frame=frame):
+                    if err := parser.run(
+                        parser.process(act, "./repr.dpl-instance"), frame=frame
+                    ):
                         rec(err)
                     if not "-disable-auto-complete" in flags:
                         acc = []
                         for f in frame:
                             acc.extend(utils.flatten_dict(f).keys())
-                            acc.extend(map(lambda x:":"+x, utils.flatten_dict(f).keys()))
-                            acc.extend(map(lambda x:"%"+x, utils.flatten_dict(f).keys()))
+                            acc.extend(
+                                map(lambda x: ":" + x, utils.flatten_dict(f).keys())
+                            )
+                            acc.extend(
+                                map(lambda x: "%" + x, utils.flatten_dict(f).keys())
+                            )
                 except Exception as e:
                     print(f"Python Exception was raised while running:\n{repr(e)}")
         case ["deps"]:

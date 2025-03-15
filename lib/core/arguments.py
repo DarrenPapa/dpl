@@ -137,6 +137,7 @@ def parse_template(frame, temp_name, body):
             return 1
     varproc.rset(frame[-1], temp_name, data)
 
+
 def flatten_dict(d, parent_key="", sep=".", seen=None):
     if seen is None:
         seen = set()
@@ -242,7 +243,9 @@ def expr_runtime(frame, arg):
         return arg
     elif is_var(arg):
         if varproc.debug["allow_automatic_global_name_resolution"]:
-            return varproc.rget(frame[-1], arg[1:], default=varproc.rget(frame[0], arg[1:]))
+            return varproc.rget(
+                frame[-1], arg[1:], default=varproc.rget(frame[0], arg[1:])
+            )
         else:
             return varproc.rget(frame[-1], arg[1:])
     elif is_fvar(arg):
@@ -520,8 +523,10 @@ def group(text):
 def exprs_preruntime(args):
     return [*map(expr_preruntime, args)]
 
+
 def process_arg(frame, e):
     return expr_runtime(frame, e)
+
 
 def process_args(frame, e):
     return list(map(lambda x: expr_runtime(frame, x), e))

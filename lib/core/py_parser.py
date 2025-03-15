@@ -92,7 +92,7 @@ varproc.meta["internal"]["os"] = {
     "information": info.SYS_INFO,  # basically the tripple
     "processor": info.SYS_PROC,  # processor (intel and such)
     "threads": os.cpu_count(),  # physical thread count,
-    "os_name":info.SYS_OS_NAME.lower()
+    "os_name": info.SYS_OS_NAME.lower(),
 }
 
 
@@ -177,41 +177,40 @@ def pprint(d, l=0, seen=None):
     if seen is None:
         seen = set()
     if id(d) in seen:
-        print("  "*l+"...")
+        print("  " * l + "...")
         return
     seen.add(id(d))
     if isinstance(d, list):
         for i in d:
             if isinstance(i, list):
-                print("  "*l+f"[")
-                pprint(i, l+1, seen)
-                print("  "*l+"]")
+                print("  " * l + f"[")
+                pprint(i, l + 1, seen)
+                print("  " * l + "]")
             else:
-                print("  "*l+repr(i))
+                print("  " * l + repr(i))
         return
     for name, value in d.items():
         if name.startswith("_"):
             ...
         elif isinstance(value, dict):
-            print("  "*l+f"{name!r} => {{")
-            pprint(value, l+1, seen)
-            print("  "*l+"}")
+            print("  " * l + f"{name!r} => {{")
+            pprint(value, l + 1, seen)
+            print("  " * l + "}")
         elif isinstance(value, list):
-            print("  "*l+f"{name!r} => [")
-            pprint(value, l+1, seen)
-            print("  "*l+"]")
+            print("  " * l + f"{name!r} => [")
+            pprint(value, l + 1, seen)
+            print("  " * l + "]")
         else:
-            print("  "*l+f"{name!r} = {value!r}")
+            print("  " * l + f"{name!r} = {value!r}")
 
 
 def process(fcode, name="__main__"):
     "Preprocess a file"
     res = []
     nframe = varproc.new_frame()
-    nframe[-1].update({
-        "__file__":name,
-        "__path__":os.path.dirname(name) or constants.none
-    })
+    nframe[-1].update(
+        {"__file__": name, "__path__": os.path.dirname(name) or constants.none}
+    )
     dead_code = True
     warnings = True
     define_func = False
@@ -249,30 +248,42 @@ def process(fcode, name="__main__"):
                     print("Not found:", file, f"\nLine {lpos}\nFile {name}")
                     break
                 if os.path.isdir(file):
-                    if not os.path.isfile(files:=os.path.join(file, "include-dpl.txt")):
+                    if not os.path.isfile(
+                        files := os.path.join(file, "include-dpl.txt")
+                    ):
                         with open(files) as f:
                             for line in f:
                                 line = line.strip()
                                 if line.startswith("#:"):
-                                    print("{name} [{lpos}] {line}:",line[2:]) # for messages like deprecation warnings
+                                    print(
+                                        "{name} [{lpos}] {line}:", line[2:]
+                                    )  # for messages like deprecation warnings
                                     continue
                                 elif line.startswith("#?"):
-                                    print(line[2:]) # for messages like deprecation warnings
+                                    print(
+                                        line[2:]
+                                    )  # for messages like deprecation warnings
                                     continue
                                 elif line.startswith("#") or not line:
                                     continue
                                 with open(line, "r") as f:
-                                    if isinstance(err:=process(f.read(), name=line), int):
+                                    if isinstance(
+                                        err := process(f.read(), name=line), int
+                                    ):
                                         return err
                                     res.extend(err["code"])
-                                    if not err["frame"] is None: nframe[0].update(err["frame"][0])
-                                varproc.meta["dependencies"]["dpl"].add(os.path.realpath(line))
+                                    if not err["frame"] is None:
+                                        nframe[0].update(err["frame"][0])
+                                varproc.meta["dependencies"]["dpl"].add(
+                                    os.path.realpath(line)
+                                )
                 else:
                     with open(file, "r") as f:
-                        if isinstance(err:=process(f.read(), name=file), int):
+                        if isinstance(err := process(f.read(), name=file), int):
                             return err
                         res.extend(err["code"])
-                        if not err["frame"] is None: nframe[0].update(err["frame"][0])
+                        if not err["frame"] is None:
+                            nframe[0].update(err["frame"][0])
                     file = os.path.realpath(file)
                     varproc.meta["dependencies"]["dpl"].add(file)
             elif ins == "set_name" and argc == 1:
@@ -287,30 +298,47 @@ def process(fcode, name="__main__"):
                     print("Not found:", file)
                     break
                 if os.path.isdir(file):
-                    if not os.path.isfile(files:=os.path.join(file, "include-cdpl.txt")):
+                    if not os.path.isfile(
+                        files := os.path.join(file, "include-cdpl.txt")
+                    ):
                         with open(files) as f:
                             for line in f:
                                 line = line.strip()
                                 if line.startswith("#:"):
-                                    print("{name} [{lpos}] {line}:",line[2:]) # for messages like deprecation warnings
+                                    print(
+                                        "{name} [{lpos}] {line}:", line[2:]
+                                    )  # for messages like deprecation warnings
                                     continue
                                 elif line.startswith("#?"):
-                                    print(line[2:]) # for messages like deprecation warnings
+                                    print(
+                                        line[2:]
+                                    )  # for messages like deprecation warnings
                                     continue
                                 elif line.startswith("#") or not line:
                                     continue
                                 with open(line, "rb") as f:
-                                    if isinstance(err:=process(pickle.loads(f.read()), name=line), int):
+                                    if isinstance(
+                                        err := process(
+                                            pickle.loads(f.read()), name=line
+                                        ),
+                                        int,
+                                    ):
                                         return err
                                     res.extend(err["code"])
-                                    if not err["frame"] is None: nframe[0].update(err["frame"][0])
-                                varproc.meta["dependencies"]["dpl"].add(os.path.realpath(line))
+                                    if not err["frame"] is None:
+                                        nframe[0].update(err["frame"][0])
+                                varproc.meta["dependencies"]["dpl"].add(
+                                    os.path.realpath(line)
+                                )
                 else:
                     with open(file, "rb") as f:
-                        if isinstance(err:=process(pickle.loads(f.read()), name=file), int):
+                        if isinstance(
+                            err := process(pickle.loads(f.read()), name=file), int
+                        ):
                             return err
                         res.extend(err["code"])
-                        if not err["frame"] is None: nframe[0].update(err["frame"][0])
+                        if not err["frame"] is None:
+                            nframe[0].update(err["frame"][0])
                     file = os.path.realpath(file)
                     varproc.meta["dependencies"]["dpl"].add(file)
             elif ins == "extend" and argc == 1:
@@ -328,38 +356,54 @@ def process(fcode, name="__main__"):
                 varproc.meta["dependencies"]["dpl"].add(file)
             elif ins == "use" and argc == 1:
                 if args[0].startswith("{") and args[0].endswith("}"):
-                    file = os.path.abspath(info.get_path_with_lib(ofile := args[0][1:-1]))
+                    file = os.path.abspath(
+                        info.get_path_with_lib(ofile := args[0][1:-1])
+                    )
                     search_path = "_std"
                 else:
                     file = os.path.join(os.path.dirname(name), (ofile := args[0]))
                     if name != "__main__":
                         file = os.path.join(os.path.dirname(name), file)
                     search_path = "_loc"
-                if ext_s.py_import(nframe, file, search_path, loc=os.path.dirname(name)):
-                    print(f"pytho: Something wrong happened...\nLine {lpos}\nFile {name}")
+                if ext_s.py_import(
+                    nframe, file, search_path, loc=os.path.dirname(name)
+                ):
+                    print(
+                        f"pytho: Something wrong happened...\nLine {lpos}\nFile {name}"
+                    )
                     return error.PREPROCESSING_ERROR
             elif ins == "use" and argc == 3 and args[1] == "as":
                 if args[0].startswith("{") and args[0].endswith("}"):
-                    file = os.path.abspath(info.get_path_with_lib(ofile := args[0][1:-1]))
+                    file = os.path.abspath(
+                        info.get_path_with_lib(ofile := args[0][1:-1])
+                    )
                     search_path = "_std"
                 else:
                     file = os.path.join(os.path.dirname(name), (ofile := args[0]))
                     if name != "__main__":
                         file = os.path.join(os.path.dirname(name), file)
                     search_path = "_loc"
-                if ext_s.py_import(nframe, file, search_path, loc=os.path.dirname(name), alias=args[2]):
-                    print(f"pytho: Something wrong happened...\nLine {lpos}\nFile {name}")
+                if ext_s.py_import(
+                    nframe, file, search_path, loc=os.path.dirname(name), alias=args[2]
+                ):
+                    print(
+                        f"pytho: Something wrong happened...\nLine {lpos}\nFile {name}"
+                    )
                     return error.PREPROCESSING_ERROR
             elif ins == "use:luaj" and argc == 1:
                 if args[0].startswith("{") and args[0].endswith("}"):
-                    file = os.path.abspath(info.get_path_with_lib(ofile := args[0][1:-1]))
+                    file = os.path.abspath(
+                        info.get_path_with_lib(ofile := args[0][1:-1])
+                    )
                     search_path = "_std"
                 else:
                     if name != "__main__":
                         file = os.path.join(os.path.dirname(name), args[0])
                     search_path = "_loc"
                 if ext_s.luaj_import(nframe, file, search_path, loc="."):
-                    print(f"luaj: Something wrong happened...\nLine {lpos}\nFile {name}")
+                    print(
+                        f"luaj: Something wrong happened...\nLine {lpos}\nFile {name}"
+                    )
                     return error.PREPROCESSING_ERROR
             elif ins == "file" and argc == 1:
                 name = args[0]
@@ -606,7 +650,9 @@ def run(code, frame=None, thread_event=IS_STILL_RUNNING):
             else:
                 p, body = temp
             varproc.rset(
-                frame[-1], "_export." + name, (temp:=objects.make_function(name, body, params))
+                frame[-1],
+                "_export." + name,
+                (temp := objects.make_function(name, body, params)),
             )
             varproc.rset(frame[-1], name, temp)
         elif ins == "export" and argc == 3 and args[0] == "set":
@@ -744,7 +790,7 @@ def run(code, frame=None, thread_event=IS_STILL_RUNNING):
             if (err := argproc.parse_match(frame, body, args[0])) > 0:
                 return err
         elif ins == "exec" and argc == 3:
-            if err:=run(process(args[0] ,name=args[1]), frame=args[2]):
+            if err := run(process(args[0], name=args[1]), frame=args[2]):
                 return err
         elif ins == "sexec" and argc == 4:
             error.silent()
@@ -1236,7 +1282,9 @@ def run(code, frame=None, thread_event=IS_STILL_RUNNING):
                 for pos, _, vname, vitem in body:
                     if vname not in template:
                         error.error(
-                            pos, file, f"Attribute {vname!r} is not defined in template!"
+                            pos,
+                            file,
+                            f"Attribute {vname!r} is not defined in template!",
                         )
                         return error.NAME_ERROR
                     if vname in dct:
@@ -1244,7 +1292,7 @@ def run(code, frame=None, thread_event=IS_STILL_RUNNING):
                             pos, file, f"Attribute {vname!r} is already defined!"
                         )
                         return error.NAME_ERROR
-                    value, = argproc.process_args(frame, vitem)
+                    (value,) = argproc.process_args(frame, vitem)
                     if value == "$default":
                         dct[vname] = template[f"value:{vname}"]
                     elif value == "$name":
@@ -1252,14 +1300,18 @@ def run(code, frame=None, thread_event=IS_STILL_RUNNING):
                     elif template[vname] == constants.any:
                         dct[vname] = value
                     elif not isinstance(value, template[vname]):
-                        error.error(pos, file, f"Invalid type!\nItem {vname!r} should be type {template[vname]!r} but got {type(vitem)!r}")
+                        error.error(
+                            pos,
+                            file,
+                            f"Invalid type!\nItem {vname!r} should be type {template[vname]!r} but got {type(vitem)!r}",
+                        )
                         return error.TYPE_ERROR
                     else:
                         dct[vname] = value
                 for i, value in template.items():
                     if not i.startswith("value:"):
                         continue
-                    i = i.removeprefix('value:')
+                    i = i.removeprefix("value:")
                     if i not in dct:
                         dct[i] = value
             else:

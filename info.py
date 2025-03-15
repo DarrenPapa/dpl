@@ -24,8 +24,8 @@ def list_files_recursive(dir_path, remove=""):
     total_size = 0
     t_files = 0
     for root, dirs, files in os.walk(dir_path):
-#        if os.path.relpath(root).startswith(".") or "__pycache__" in root:
-#            continue
+        #        if os.path.relpath(root).startswith(".") or "__pycache__" in root:
+        #            continue
         for file in files:
             if file.strip(os.path.sep).startswith("."):
                 continue
@@ -44,7 +44,7 @@ def list_files_recursive(dir_path, remove=""):
                         "yaml",
                         "toml",
                         "md",
-                        "lua"
+                        "lua",
                     }:
                         head = "Head:\n"
                         while (temp := f.readline().lstrip()).startswith(
@@ -57,7 +57,7 @@ def list_files_recursive(dir_path, remove=""):
                                 "yaml": "#",
                                 "md": "<--",
                                 "c": "//",
-                                "lua":"--"
+                                "lua": "--",
                             }[EXT]
                         ):
                             head += "    " + temp

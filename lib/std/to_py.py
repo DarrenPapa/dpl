@@ -17,6 +17,7 @@ def define(frame, __, body, name):
         res = dpl.varproc.rget(frame[-1], "_export", default=None)
         dpl.varproc.pscope(frame)
         return res
+
     dpl.varproc.rset(frame[-1], name, func)
 
 
@@ -45,6 +46,7 @@ def to_py(frame, _, temp):
         res = dpl.varproc.rget(frame[-1], "_export", default=None)
         dpl.varproc.pscope(frame)
         return res
+
     return (func,)
 
 

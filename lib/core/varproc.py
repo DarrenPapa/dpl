@@ -16,7 +16,7 @@ dependencies = {"dpl": set(), "python": {}, "lua": {}}
 
 # debug options
 debug = {
-    "allow_automatic_global_name_resolution":1, # to get variables faster
+    "allow_automatic_global_name_resolution": 1,  # to get variables faster
     "show_scope_updates": 0,
     "show_value_updates": 0,
     "show_imports": 0,
@@ -92,6 +92,7 @@ def nscope(frame):
     if is_debug_enabled("show_scope_updates"):
         error.info(f"New scope created!")
 
+
 def pscope(frame):
     "Pop the current scope also discarding"
     if len(frame) > 1:
@@ -119,11 +120,7 @@ def rget(dct, full_name, default=constants.nil, sep=".", meta=True):
     node = dct
     while path:
         pos, name = path.pop()
-        if (
-            pos != last
-            and name in node
-            and isinstance(node[name], dict)
-        ):
+        if pos != last and name in node and isinstance(node[name], dict):
             node = node[name]
         elif pos == last and name in node:
             if is_debug_enabled("show_value_updates"):
@@ -148,11 +145,7 @@ def rpop(dct, full_name, default=constants.nil, sep="."):
     node = dct
     while path:
         pos, name = path.pop()
-        if (
-            pos != last
-            and name in node
-            and isinstance(node[name], dict)
-        ):
+        if pos != last and name in node and isinstance(node[name], dict):
             node = node[name]
         elif pos == last and name in node:
             if is_debug_enabled("show_value_updates"):
@@ -187,9 +180,7 @@ def rset(dct, full_name, value, sep=".", meta=True):
             if (
                 meta
                 and full_name in dct
-                and isinstance(
-                    (temp := dct[full_name]), dict
-                )
+                and isinstance((temp := dct[full_name]), dict)
                 and "[meta_value]" in temp
             ):
                 dct[full_name]["[meta_value]"] = value
@@ -205,11 +196,7 @@ def rset(dct, full_name, value, sep=".", meta=True):
     node = dct
     while path:
         pos, name = path.pop()
-        if (
-            pos != last
-            and name in node
-            and isinstance(node[name], dict)
-        ):
+        if pos != last and name in node and isinstance(node[name], dict):
             node = node[name]
         elif pos == last:
             if node.get("_set_only_when_defined") and name not in node:
@@ -230,9 +217,7 @@ def rset(dct, full_name, value, sep=".", meta=True):
                 if (
                     meta
                     and name in node
-                    and isinstance(
-                        (temp := node[name]), dict
-                    )
+                    and isinstance((temp := node[name]), dict)
                     and "[meta_value]" in temp
                 ):
                     node[name]["[meta_value]"] = value

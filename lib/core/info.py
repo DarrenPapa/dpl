@@ -38,38 +38,71 @@ INC_EXT = {
     "template",
     "from_template",
     "with",
-    "default"
+    "default",
 }
 
 INC = {"thread": 1}
 
 DEC = {"end", "then"}
 
-KEYWORDS = list(INC_EXT)+list(INC.keys())+list(DEC)+[
-    'set',
-    'del',
-    'const',
-    'fset',
-    'cmd',
-    'exit',
-    'fallthrough',
-    'skip',
-    'stop',
-    'raise',
-    'true', 'false', 'nil', 'none', '...',
-    '!list', '!tuple', '!dict',
-    '?str', '?int', '?float', '?list', '?tuple',
-    '?dict',
-    'dict',
-    'export',
-    'in', 'as',
-    'LenOf', 'Type', 'Range', 'RawRange', 'dRange',
-    'dRawRange', 'mod', 'nil?', 'none?', 'Sum', '?bytes',
-    'Expr', 'lazy',
-    'not', 'and', 'or', 'wait_for_threads',
-    'exec', 'sexec',
-    'dlopen', 'dlclose', 'cget', 'cdef'
-]
+KEYWORDS = (
+    list(INC_EXT)
+    + list(INC.keys())
+    + list(DEC)
+    + [
+        "set",
+        "del",
+        "const",
+        "fset",
+        "cmd",
+        "exit",
+        "fallthrough",
+        "skip",
+        "stop",
+        "raise",
+        "true",
+        "false",
+        "nil",
+        "none",
+        "...",
+        "!list",
+        "!tuple",
+        "!dict",
+        "?str",
+        "?int",
+        "?float",
+        "?list",
+        "?tuple",
+        "?dict",
+        "dict",
+        "export",
+        "in",
+        "as",
+        "LenOf",
+        "Type",
+        "Range",
+        "RawRange",
+        "dRange",
+        "dRawRange",
+        "mod",
+        "nil?",
+        "none?",
+        "Sum",
+        "?bytes",
+        "Expr",
+        "lazy",
+        "not",
+        "and",
+        "or",
+        "wait_for_threads",
+        "exec",
+        "sexec",
+        "dlopen",
+        "dlclose",
+        "cget",
+        "cdef",
+    ]
+)
 
 CHARS = {
     "\\\\": "\\[escape]",
@@ -91,6 +124,7 @@ WARNINGS = True
 DEAD_CODE_OPT = True
 
 VERSION_TRIPLE = (1, 4, 6)
+
 
 def isCompat(version, VERSION=VERSION_TRIPLE):
     major, minor, patch = version

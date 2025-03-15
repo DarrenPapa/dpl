@@ -7,11 +7,12 @@ from re import compile as rcomp
 pattern = rcomp(r"[&\w\.\:_\%\!]+")
 import os
 
-SUGGEST = info.KEYWORDS+[
-    'pub fn',
-    'export set',
+SUGGEST = info.KEYWORDS + [
+    "pub fn",
+    "export set",
 ]
 SUGGEST.remove("pub")
+
 
 def listdir(path=info.LIBDIR):
     directory_contents = {}
@@ -21,16 +22,19 @@ def listdir(path=info.LIBDIR):
         if root == path:
             for dir_name in dirs:
                 dir_path = os.path.join(root, dir_name)
-                directory_contents[dir_name] = list(filter(
-                    lambda x: (t:=x.rsplit('.', 1))[-1] in (
-                        "py", "dpl", "cdpl", "lua"
-                    ) or t[0] in (
-                        "include-dpl", "include-cdpl",
-                        "include-py", "include-lua"
-                    ),
-                    os.listdir(dir_path)))
+                directory_contents[dir_name] = list(
+                    filter(
+                        lambda x: (t := x.rsplit(".", 1))[-1]
+                        in ("py", "dpl", "cdpl", "lua")
+                        or t[0]
+                        in ("include-dpl", "include-cdpl", "include-py", "include-lua"),
+                        os.listdir(dir_path),
+                    )
+                )
             break  # Stop after processing the top-level directory
     return directory_contents
+
+
 k = listdir()
 k.pop("core")
 k.pop("dpl_helpers")
